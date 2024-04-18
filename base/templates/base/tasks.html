@@ -1,0 +1,47 @@
+{% if request.user.is_authenticated %}
+    <p>Hello {{request.user}}</p>
+    <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+    <p>Hello {{request.user}}</p>
+    <a href="{% url 'login' %}">Login</a>
+{% endif %}
+
+<hr>
+<h3>Too Do List</h3>
+<p>Create Task here</p>
+<form method="post" action="/">
+    {% csrf_token %}
+    <div>{{form.title}}</div>
+    <div>{{form.description}}</div>
+    <div>{{form.complete}}</div>
+    <input type="submit" name="Create Task">
+</form>
+<p>These are my tasks for today</p>
+<div>
+    <table border="solid">
+        <tr>
+            <th>Task</th>
+            <th colspan="2">Actions</th>
+        </tr>
+        {% for task in tasks %}
+        {% if task.complete == True %}
+        <tr>
+            <td><strike>{{task.title}}</strike></td>
+            <td><a href="{% url 'updatetask' task.id %}">View</a></td>
+            <td><a href="{% url 'deletetask' task.id %}">Delete</a></td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>{{task.title}}</td>
+            <td><a href="{% url 'updatetask' task.id %}">View</a></td>
+            <td><a href="{% url 'deletetask' task.id %}">Delete</a></td>
+        </tr>
+        {% endif %}
+        {% empty %}
+        <tr>
+            <td colspan="2">There are no tasks for you today!!</td>
+        </tr>
+        {% endfor %}
+        
+    </table>
+</div>
